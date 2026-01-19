@@ -1,0 +1,374 @@
+[
+  {
+    "title": "Upload asset batch with PAN field empty",
+    "description": "Verify that asset batch upload succeeds when PAN field is left empty for all records",
+    "business_rule": "PAN field is non-mandatory during asset batch upload; records without PAN should be processed successfully",
+    "preconditions": [
+      "User has access to asset batch upload feature",
+      "Valid asset batch file prepared with PAN field empty for all records"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Navigate to asset batch upload page",
+        "expected_result": "Asset batch upload page is displayed"
+      },
+      {
+        "step_number": 2,
+        "action": "Upload asset batch file with PAN field empty for all records",
+        "expected_result": "File is accepted for processing"
+      },
+      {
+        "step_number": 3,
+        "action": "Submit the batch upload",
+        "expected_result": "Batch upload completes successfully without PAN-related errors"
+      }
+    ],
+    "expected_outcome": "Asset records without PAN are uploaded and processed successfully",
+    "postconditions": [
+      "Asset records exist in the system without PAN information",
+      "No validation errors related to PAN field"
+    ],
+    "tags": [
+      "happy-path",
+      "batch-upload",
+      "non-mandatory-field"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "PAN field empty for all records",
+      "Batch file with minimum number of records (1 record)",
+      "Batch file with maximum allowed number of records"
+    ],
+    "side_effects": [
+      "New asset records created without PAN"
+    ]
+  },
+  {
+    "title": "Upload asset batch with PAN field populated",
+    "description": "Verify that asset batch upload succeeds when PAN field is provided for all records",
+    "business_rule": "PAN field is optional; if provided, it should be accepted and processed",
+    "preconditions": [
+      "User has access to asset batch upload feature",
+      "Valid asset batch file prepared with valid PAN values for all records"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Navigate to asset batch upload page",
+        "expected_result": "Asset batch upload page is displayed"
+      },
+      {
+        "step_number": 2,
+        "action": "Upload asset batch file with valid PAN values for all records",
+        "expected_result": "File is accepted for processing"
+      },
+      {
+        "step_number": 3,
+        "action": "Submit the batch upload",
+        "expected_result": "Batch upload completes successfully with PAN data saved"
+      }
+    ],
+    "expected_outcome": "Asset records with PAN are uploaded and processed successfully",
+    "postconditions": [
+      "Asset records exist in the system with PAN information",
+      "No validation errors related to PAN field"
+    ],
+    "tags": [
+      "happy-path",
+      "batch-upload",
+      "optional-field"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "PAN field populated with minimum length PAN",
+      "PAN field populated with maximum length PAN",
+      "Batch file with mixed PAN values"
+    ],
+    "side_effects": [
+      "New asset records created with PAN"
+    ]
+  },
+  {
+    "title": "Upload asset batch with some records missing PAN",
+    "description": "Verify that asset batch upload succeeds when some records have PAN and others do not",
+    "business_rule": "PAN field is optional; mixed presence of PAN in batch records should be handled without errors",
+    "preconditions": [
+      "User has access to asset batch upload feature",
+      "Valid asset batch file prepared with some records having PAN and others empty"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Navigate to asset batch upload page",
+        "expected_result": "Asset batch upload page is displayed"
+      },
+      {
+        "step_number": 2,
+        "action": "Upload asset batch file with mixed PAN presence",
+        "expected_result": "File is accepted for processing"
+      },
+      {
+        "step_number": 3,
+        "action": "Submit the batch upload",
+        "expected_result": "Batch upload completes successfully without PAN-related errors"
+      }
+    ],
+    "expected_outcome": "Asset records with and without PAN are uploaded and processed successfully",
+    "postconditions": [
+      "Asset records exist with correct PAN data where provided",
+      "No validation errors related to PAN field"
+    ],
+    "tags": [
+      "happy-path",
+      "batch-upload",
+      "optional-field",
+      "mixed-data"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "Batch file with 0% PAN populated",
+      "Batch file with 50% PAN populated",
+      "Batch file with 100% PAN populated"
+    ],
+    "side_effects": [
+      "New asset records created with partial PAN data"
+    ]
+  },
+  {
+    "title": "Upload asset batch with invalid PAN format",
+    "description": "Verify that batch upload fails or warns when PAN field contains invalid format values",
+    "business_rule": "If PAN is provided, it must conform to valid format; invalid PAN should cause validation errors",
+    "preconditions": [
+      "User has access to asset batch upload feature",
+      "Asset batch file prepared with invalid PAN values (e.g. incorrect length, invalid characters)"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Navigate to asset batch upload page",
+        "expected_result": "Asset batch upload page is displayed"
+      },
+      {
+        "step_number": 2,
+        "action": "Upload asset batch file containing invalid PAN values",
+        "expected_result": "File is accepted for processing"
+      },
+      {
+        "step_number": 3,
+        "action": "Submit the batch upload",
+        "expected_result": "Validation errors are shown for records with invalid PAN"
+      }
+    ],
+    "expected_outcome": "Batch upload fails or partial upload with error report for invalid PAN records",
+    "postconditions": [
+      "No asset records created for invalid PAN entries",
+      "Error report generated for invalid PAN records"
+    ],
+    "tags": [
+      "error-case",
+      "validation",
+      "batch-upload",
+      "security"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "PAN with invalid length (too short or too long)",
+      "PAN with special characters",
+      "PAN with lowercase letters if uppercase required"
+    ],
+    "side_effects": [
+      "Error logs generated",
+      "No database entry for invalid PAN records"
+    ]
+  },
+  {
+    "title": "Upload asset batch with PAN field containing SQL injection attempt",
+    "description": "Verify system security by rejecting or sanitizing PAN field input containing SQL injection patterns",
+    "business_rule": "System must prevent security vulnerabilities by validating and sanitizing PAN input",
+    "preconditions": [
+      "User has access to asset batch upload feature",
+      "Asset batch file prepared with PAN field containing SQL injection strings"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Navigate to asset batch upload page",
+        "expected_result": "Asset batch upload page is displayed"
+      },
+      {
+        "step_number": 2,
+        "action": "Upload asset batch file with PAN containing SQL injection patterns",
+        "expected_result": "File is accepted or rejected based on validation"
+      },
+      {
+        "step_number": 3,
+        "action": "Submit the batch upload",
+        "expected_result": "System rejects input or sanitizes PAN field; no security breach occurs"
+      }
+    ],
+    "expected_outcome": "No SQL injection vulnerability; system handles malicious input safely",
+    "postconditions": [
+      "No asset records created with malicious PAN data",
+      "Security logs capture attempted injection"
+    ],
+    "tags": [
+      "security",
+      "validation",
+      "batch-upload",
+      "error-case"
+    ],
+    "priority": "High",
+    "test_type": "Security",
+    "boundary_conditions": [
+      "PAN containing SQL keywords",
+      "PAN containing special SQL characters (e.g. ' ; --)",
+      "PAN with embedded scripts or code"
+    ],
+    "side_effects": [
+      "Security alert logged",
+      "Input rejected or sanitized"
+    ]
+  },
+  {
+    "title": "Upload asset batch with extremely large file without PAN",
+    "description": "Verify system performance and stability when uploading a very large batch file with PAN field empty",
+    "business_rule": "System should handle large batch uploads gracefully even when PAN is missing",
+    "preconditions": [
+      "User has access to asset batch upload feature",
+      "Very large asset batch file prepared with PAN field empty for all records"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Navigate to asset batch upload page",
+        "expected_result": "Asset batch upload page is displayed"
+      },
+      {
+        "step_number": 2,
+        "action": "Upload very large batch file with PAN empty",
+        "expected_result": "File upload initiates without timeout"
+      },
+      {
+        "step_number": 3,
+        "action": "Submit the batch upload",
+        "expected_result": "Batch upload completes successfully within acceptable time"
+      }
+    ],
+    "expected_outcome": "System processes large batch upload without PAN without performance degradation or failure",
+    "postconditions": [
+      "All asset records created without PAN",
+      "System performance metrics within acceptable limits"
+    ],
+    "tags": [
+      "performance",
+      "batch-upload",
+      "non-mandatory-field",
+      "boundary-condition"
+    ],
+    "priority": "Medium",
+    "test_type": "Performance",
+    "boundary_conditions": [
+      "Batch file with maximum allowed size",
+      "Batch file with minimum allowed size",
+      "Batch file with PAN empty for all records"
+    ],
+    "side_effects": [
+      "New asset records created without PAN",
+      "System resource utilization increased during upload"
+    ]
+  },
+  {
+    "title": "Verify UI indication that PAN field is non-mandatory during batch upload",
+    "description": "Check that the UI clearly indicates that PAN field is optional during asset batch upload",
+    "business_rule": "User should be informed that PAN field is not mandatory to avoid confusion",
+    "preconditions": [
+      "User is on asset batch upload page"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Open asset batch upload interface",
+        "expected_result": "Upload form or instructions are visible"
+      },
+      {
+        "step_number": 2,
+        "action": "Check labels, tooltips, or help text for PAN field",
+        "expected_result": "PAN field is marked as optional or non-mandatory"
+      }
+    ],
+    "expected_outcome": "User clearly understands PAN field is optional during batch upload",
+    "postconditions": [],
+    "tags": [
+      "ui-ux",
+      "usability",
+      "batch-upload",
+      "optional-field"
+    ],
+    "priority": "Low",
+    "test_type": "UI/UX",
+    "boundary_conditions": [
+      "UI on desktop resolution",
+      "UI on mobile resolution",
+      "UI with screen reader accessibility"
+    ],
+    "side_effects": []
+  },
+  {
+    "title": "Upload asset batch with PAN field containing whitespace only",
+    "description": "Verify system treats PAN field with whitespace only as empty and allows upload",
+    "business_rule": "PAN field with only whitespace should be treated as missing and not cause errors",
+    "preconditions": [
+      "User has access to asset batch upload feature",
+      "Asset batch file prepared with PAN field containing spaces or tabs only"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Navigate to asset batch upload page",
+        "expected_result": "Asset batch upload page is displayed"
+      },
+      {
+        "step_number": 2,
+        "action": "Upload asset batch file with PAN field whitespace only",
+        "expected_result": "File is accepted for processing"
+      },
+      {
+        "step_number": 3,
+        "action": "Submit the batch upload",
+        "expected_result": "Batch upload completes successfully treating PAN as missing"
+      }
+    ],
+    "expected_outcome": "Asset records uploaded successfully with PAN treated as empty",
+    "postconditions": [
+      "Asset records exist without PAN information",
+      "No validation errors related to PAN field"
+    ],
+    "tags": [
+      "edge-case",
+      "batch-upload",
+      "optional-field"
+    ],
+    "priority": "Medium",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "PAN field with single space",
+      "PAN field with multiple spaces",
+      "PAN field with tab characters"
+    ],
+    "side_effects": [
+      "New asset records created without PAN"
+    ]
+  },
+  {
+    "title": "Upload asset batch with PAN field containing maximum allowed length",
+    "description": "Verify that PAN field accepts input up to maximum allowed length and processes successfully",
+    "business_rule": "If PAN is provided, it must not exceed maximum length; system should accept max length PAN",
+    "preconditions": [
+      "User has access to asset batch upload feature",
+      "Asset batch file prepared with PAN field at maximum allowed length"
+    ]

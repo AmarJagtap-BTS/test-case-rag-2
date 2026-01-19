@@ -1,0 +1,163 @@
+"""
+Decision maker orchestrates the test case comparison and decision process
+"""
+from typing import List, Optional
+from models import TestCase, ComparisonResult, DecisionType
+from comparison_engine import ComparisonEngine
+from rag_engine import RAGEngine
+from config import Config
+
+
+class DecisionMaker:
+    """Orchestrate test case comparison and decision making"""
+    
+    def __init__(self, rag_engine: RAGEngine):
+        """
+        Initialize decision maker
+        
+        Args:
+            rag_engine: RAG engine for retrieving similar test cases
+        """
+        self.rag_engine = rag_engine
+        self.comparison_engine = ComparisonEngine()
+    
+    def analyze_new_test_case(
+        self, 
+        new_test_case: TestCase,
+        top_k: int = 5
+    ) -> ComparisonResult:
+        """
+        Analyze a new test case against existing knowledge base
+        
+        Args:
+            new_test_case: New test case to analyze
+            top_k: Number of similar cases to retrieve
+            
+        Returns:
+            ComparisonResult with decision
+        """
+        # Search for similar test cases
+        similar_cases = self.rag_engine.search_similar_test_cases(
+            new_test_case, 
+            top_k=top_k
+        )
+        
+        # If no existing cases, it's a new test case
+        if not similar_cases:
+            return ComparisonResult(
+                new_test_case_id=new_test_case.id,
+                existing_test_case_id=None,
+                similarity_score=0.0,
+                decision=DecisionType.NEW,
+                reasoning="No similar test cases found in knowledge base. This is a new test case.",
+                business_rule_match=False,
+                behavior_match=False,
+                coverage_expansion=[],
+                confidence_score=1.0
+            )
+        
+        # Get the most similar case
+        most_similar = similar_cases[0]
+        
+        # If similarity is very low, it's a new test case
+        if most_similar['similarity'] < Config.THRESHOLD_ADDON_MIN:
+            return ComparisonResult(
+                new_test_case_id=new_test_case.id,
+                existing_test_case_id=most_similar['id'],
+                similarity_score=most_similar['similarity'],
+                decision=DecisionType.NEW,
+                reasoning=f"Low similarity ({most_similar['similarity']:.2%}) with existing test cases. This is a new test case.",
+                business_rule_match=False,
+                behavior_match=False,
+                coverage_expansion=[],
+                confidence_score=0.9
+            )
+        
+        # Reconstruct existing test case from stored data
+        existing_test_case = self._reconstruct_test_case(most_similar)
+        
+        # Perform detailed comparison
+        comparison_result = self.comparison_engine.compare_test_cases(
+            new_test_case,
+            existing_test_case
+        )
+        
+        return comparison_result
+    
+    def analyze_batch(
+        self, 
+        new_test_cases: List[TestCase],
+        top_k: int = 5
+    ) -> List[ComparisonResult]:
+        """
+        Analyze multiple new test cases
+        
+        Args:
+            new_test_cases: List of new test cases
+            top_k: Number of similar cases to retrieve per test case
+            
+        Returns:
+            List of ComparisonResults
+        """
+        results = []
+        
+        for test_case in new_test_cases:
+            result = self.analyze_new_test_case(test_case, top_k)
+            results.append(result)
+        
+        return results
+    
+    def get_recommendation(self, comparison_result: ComparisonResult) -> str:
+        """
+        Get action recommendation based on comparison result
+        
+        Args:
+            comparison_result: Comparison result
+            
+        Returns:
+            Recommendation text
+        """
+        if comparison_result.decision == DecisionType.SAME:
+            return f"Keep existing test case (ID: {comparison_result.existing_test_case_id}). The new test case is identical."
+        
+        elif comparison_result.decision == DecisionType.ADDON:
+            return f"Modify existing test case (ID: {comparison_result.existing_test_case_id}) to incorporate expanded coverage: {', '.join(comparison_result.coverage_expansion)}"
+        
+        else:  # NEW
+            return f"Create new test case (ID: {comparison_result.new_test_case_id}). No equivalent found in knowledge base."
+    
+    def _reconstruct_test_case(self, similar_case_data: dict) -> TestCase:
+        """
+        Reconstruct TestCase object from ChromaDB data
+        
+        Args:
+            similar_case_data: Data from ChromaDB
+            
+        Returns:
+            Reconstructed TestCase
+        """
+        from utils import parse_test_case_json
+        
+        metadata = similar_case_data['metadata']
+        
+        # Create a minimal test case from metadata
+        # Note: Full reconstruction would require storing complete JSON
+        # For now, we use the document text and metadata
+        test_case_dict = {
+            "id": metadata['id'],
+            "title": metadata['title'],
+            "description": similar_case_data['document'].split('\n')[1].replace('Description: ', ''),
+            "business_rule": metadata['business_rule'],
+            "preconditions": [],
+            "test_steps": [],
+            "expected_outcome": "",
+            "postconditions": [],
+            "tags": metadata['tags'].split(',') if metadata['tags'] else [],
+            "priority": metadata['priority'],
+            "test_type": metadata['test_type'],
+            "boundary_conditions": [],
+            "side_effects": [],
+            "version": int(metadata['version'])
+        }
+        
+        return parse_test_case_json(test_case_dict)

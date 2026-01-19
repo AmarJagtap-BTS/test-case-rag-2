@@ -1,0 +1,144 @@
+{
+    "test_cases": [
+        {
+            "title": "Valid User Login",
+            "description": "Verify that users can successfully log in with valid credentials",
+            "business_rule": "User authentication and session management",
+            "preconditions": [
+                "User account exists in the system",
+                "User has valid credentials"
+            ],
+            "test_steps": [
+                {
+                    "step_number": 1,
+                    "action": "Navigate to login page",
+                    "expected_result": "Login form is displayed"
+                },
+                {
+                    "step_number": 2,
+                    "action": "Enter valid email address",
+                    "expected_result": "Email is accepted"
+                },
+                {
+                    "step_number": 3,
+                    "action": "Enter valid password",
+                    "expected_result": "Password is masked"
+                },
+                {
+                    "step_number": 4,
+                    "action": "Click 'Login' button",
+                    "expected_result": "User is authenticated and redirected to dashboard"
+                }
+            ],
+            "expected_outcome": "User successfully logs in and is redirected to the dashboard",
+            "postconditions": [
+                "User session is created",
+                "User is logged in"
+            ],
+            "tags": [
+                "login",
+                "authentication",
+                "positive"
+            ],
+            "priority": "High",
+            "test_type": "Functional",
+            "boundary_conditions": [],
+            "side_effects": []
+        },
+        {
+            "title": "Invalid Password Login Attempt",
+            "description": "Verify that login fails with incorrect password",
+            "business_rule": "User authentication and session management",
+            "preconditions": [
+                "User account exists in the system"
+            ],
+            "test_steps": [
+                {
+                    "step_number": 1,
+                    "action": "Navigate to login page",
+                    "expected_result": "Login form is displayed"
+                },
+                {
+                    "step_number": 2,
+                    "action": "Enter valid email address",
+                    "expected_result": "Email is accepted"
+                },
+                {
+                    "step_number": 3,
+                    "action": "Enter incorrect password",
+                    "expected_result": "Password is masked"
+                },
+                {
+                    "step_number": 4,
+                    "action": "Click 'Login' button",
+                    "expected_result": "Error message is displayed: 'Invalid credentials'"
+                }
+            ],
+            "expected_outcome": "Login fails and appropriate error message is shown",
+            "postconditions": [
+                "User remains on login page",
+                "No session is created"
+            ],
+            "tags": [
+                "login",
+                "authentication",
+                "negative"
+            ],
+            "priority": "High",
+            "test_type": "Functional",
+            "boundary_conditions": [],
+            "side_effects": []
+        },
+        {
+            "title": "Account Lockout After Multiple Failed Attempts",
+            "description": "Verify that account is locked after 3 failed login attempts",
+            "business_rule": "Security - Account lockout policy",
+            "preconditions": [
+                "User account exists and is active",
+                "Lockout policy is enabled (3 attempts)"
+            ],
+            "test_steps": [
+                {
+                    "step_number": 1,
+                    "action": "Attempt login with wrong password (attempt 1)",
+                    "expected_result": "Error message displayed, account not locked"
+                },
+                {
+                    "step_number": 2,
+                    "action": "Attempt login with wrong password (attempt 2)",
+                    "expected_result": "Error message displayed, account not locked"
+                },
+                {
+                    "step_number": 3,
+                    "action": "Attempt login with wrong password (attempt 3)",
+                    "expected_result": "Account is locked, lockout message displayed"
+                },
+                {
+                    "step_number": 4,
+                    "action": "Attempt login with correct password",
+                    "expected_result": "Login denied, account locked message shown"
+                }
+            ],
+            "expected_outcome": "Account is locked after 3 failed attempts and cannot log in even with correct credentials",
+            "postconditions": [
+                "Account status is 'locked'",
+                "User cannot log in"
+            ],
+            "tags": [
+                "login",
+                "security",
+                "lockout",
+                "negative"
+            ],
+            "priority": "High",
+            "test_type": "Security",
+            "boundary_conditions": [
+                "Exactly 3 failed attempts trigger lockout",
+                "2 failed attempts do not trigger lockout"
+            ],
+            "side_effects": [
+                "Account must be unlocked by administrator"
+            ]
+        }
+    ]
+}

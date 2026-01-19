@@ -1,0 +1,12 @@
+{
+  "testCaseId": "TC005",
+  "description": "Create application with all fields having valid edge values",
+  "preconditions": "User is on the application creation page",
+  "steps": [
+    "Enter the lowest valid Aadhaar Number (e.g. 100000000000)",
+    "Enter the lowest valid Mobile Number (e.g. 6000000000)",
+    "Enter a valid Email ID with minimum length",
+    "Submit the application form"
+  ],
+  "expectedResult": "Application is successfully created and confirmation message is displayed"
+}

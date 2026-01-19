@@ -1,0 +1,25 @@
+# Core Dependencies
+openai==1.58.1
+langchain==0.1.9
+langchain-openai==0.0.5
+chromadb==0.4.22
+
+# Data Processing
+pydantic==2.6.1
+pandas==2.2.0
+openpyxl==3.1.2
+
+# UI
+streamlit==1.31.0
+
+# API
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
+
+# Utilities
+python-dotenv==1.0.1
+tiktoken>=0.5.2,<0.6.0
+numpy==1.26.4
+
+# Database
+sqlalchemy==2.0.25

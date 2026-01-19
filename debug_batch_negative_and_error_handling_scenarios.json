@@ -1,0 +1,12 @@
+{
+  "testCaseId": "TC_NEG_003",
+  "description": "Verify error message when Email ID is missing '@' symbol",
+  "preconditions": "Application form is open",
+  "testSteps": [
+    "Enter valid Aadhaar Number",
+    "Enter valid Mobile Number",
+    "Enter Email ID without '@' symbol (e.g., 'useremail.com')",
+    "Submit the application form"
+  ],
+  "expectedResult": "Application should display an error message indicating invalid Email ID format and prevent form submission"
+}

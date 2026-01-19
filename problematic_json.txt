@@ -1,0 +1,519 @@
+[
+  {
+    "title": "Login page initial layout and element visibility",
+    "description": "Verify that the login page loads with Username and Password fields visible, OTP field hidden, and all required CTAs present",
+    "business_rule": "Login page must present username and password inputs initially, hide OTP field, and show all CTAs for user interaction",
+    "preconditions": [
+      "User navigates to the login page"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Observe the login page on initial load",
+        "expected_result": "Username (Email/Phone) and Password fields are visible"
+      },
+      {
+        "step_number": 2,
+        "action": "Check OTP field visibility",
+        "expected_result": "OTP field is hidden by default"
+      },
+      {
+        "step_number": 3,
+        "action": "Verify presence of Login CTA button",
+        "expected_result": "Login button is present and initially disabled or prompts validation"
+      },
+      {
+        "step_number": 4,
+        "action": "Verify presence of 'Forgot Password' link",
+        "expected_result": "'Forgot Password' link is visible and clickable"
+      },
+      {
+        "step_number": 5,
+        "action": "Verify presence of 'Sign Up / Register' link",
+        "expected_result": "'Sign Up / Register' link is visible and clickable"
+      },
+      {
+        "step_number": 6,
+        "action": "Verify presence of social login icons/buttons (Google, Apple, Microsoft)",
+        "expected_result": "Social login options are visible and clickable"
+      }
+    ],
+    "expected_outcome": "Login page displays all required fields and CTAs with OTP field hidden initially",
+    "postconditions": [
+      "Login page remains loaded with initial UI state"
+    ],
+    "tags": [
+      "ui",
+      "initial-state",
+      "happy-path"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "Page load with no user input",
+      "Visibility of OTP field before password input",
+      "Login button state before input"
+    ],
+    "side_effects": []
+  },
+  {
+    "title": "OTP field appears dynamically upon password input",
+    "description": "Verify that entering at least one character in the Password field triggers the OTP field to appear with animation and Resend OTP button behavior",
+    "business_rule": "OTP field must become visible with smooth animation as soon as user starts typing password, with Resend OTP button disabled initially",
+    "preconditions": [
+      "User is on the login page with OTP field hidden"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Enter a single character into the Password field",
+        "expected_result": "OTP field appears with a smooth transition animation"
+      },
+      {
+        "step_number": 2,
+        "action": "Observe the Resend OTP CTA next to the OTP field",
+        "expected_result": "Resend OTP button is visible but disabled for 30-60 seconds"
+      },
+      {
+        "step_number": 3,
+        "action": "Wait for 60 seconds",
+        "expected_result": "Resend OTP button becomes enabled and clickable"
+      },
+      {
+        "step_number": 4,
+        "action": "Clear the Password field",
+        "expected_result": "OTP field hides again or remains visible depending on design (verify expected behavior)"
+      }
+    ],
+    "expected_outcome": "OTP field dynamically appears on password input with correct animation and Resend OTP button behavior",
+    "postconditions": [
+      "OTP field is visible after password input",
+      "Resend OTP button state changes after timeout"
+    ],
+    "tags": [
+      "ui",
+      "dynamic-behavior",
+      "animation",
+      "security"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "Password field empty vs one character input",
+      "Resend OTP button disabled duration (30-60 seconds)",
+      "OTP field visibility toggle on password clear"
+    ],
+    "side_effects": []
+  },
+  {
+    "title": "Password masking and show/hide toggle functionality",
+    "description": "Verify that the Password field masks input by default and the eye icon toggles visibility correctly",
+    "business_rule": "Password input must be masked by default and user can toggle visibility securely",
+    "preconditions": [
+      "User is on the login page"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Enter password characters into the Password field",
+        "expected_result": "Characters are masked (e.g., dots or asterisks)"
+      },
+      {
+        "step_number": 2,
+        "action": "Click the 'Show/Hide' eye icon",
+        "expected_result": "Password characters become visible in plain text"
+      },
+      {
+        "step_number": 3,
+        "action": "Click the 'Show/Hide' eye icon again",
+        "expected_result": "Password characters are masked again"
+      }
+    ],
+    "expected_outcome": "Password field masking and toggle functionality works as expected",
+    "postconditions": [
+      "Password field state is consistent with user toggle"
+    ],
+    "tags": [
+      "ui",
+      "security",
+      "usability"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "Empty password field toggle",
+      "Long password input masking",
+      "Rapid toggling of show/hide icon"
+    ],
+    "side_effects": []
+  },
+  {
+    "title": "Login attempt with all fields correctly populated (Happy Path)",
+    "description": "Verify successful login when Username, Password, and OTP are correctly entered and valid",
+    "business_rule": "Login CTA processes request only when all fields are populated and credentials are valid, initiating secure session",
+    "preconditions": [
+      "User is registered with valid username and password",
+      "Valid OTP is generated and available",
+      "User is on login page with OTP field visible"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Enter valid Username (email or phone)",
+        "expected_result": "Username field accepts input"
+      },
+      {
+        "step_number": 2,
+        "action": "Enter valid Password",
+        "expected_result": "Password field accepts input and OTP field appears"
+      },
+      {
+        "step_number": 3,
+        "action": "Enter valid OTP within validity window",
+        "expected_result": "OTP field accepts input"
+      },
+      {
+        "step_number": 4,
+        "action": "Click Login CTA button",
+        "expected_result": "Login request is processed"
+      }
+    ],
+    "expected_outcome": "User is successfully logged in, redirected to personalized dashboard, and secure session is initiated",
+    "postconditions": [
+      "User session is active",
+      "User is on dashboard page"
+    ],
+    "tags": [
+      "functional",
+      "happy-path",
+      "security",
+      "authentication"
+    ],
+    "priority": "High",
+    "test_type": "E2E",
+    "boundary_conditions": [
+      "OTP entered near expiry time",
+      "Minimum length username and password",
+      "Valid OTP within 5-10 minutes"
+    ],
+    "side_effects": [
+      "User session created",
+      "Dashboard page loaded"
+    ]
+  },
+  {
+    "title": "Login attempt with empty fields triggers validation errors",
+    "description": "Verify that clicking Login CTA with any empty field shows 'Field cannot be empty' error and prevents submission",
+    "business_rule": "Login cannot proceed if Username, Password, or OTP fields are empty; user must be notified",
+    "preconditions": [
+      "User is on login page"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Leave Username field empty",
+        "expected_result": "Username field is empty"
+      },
+      {
+        "step_number": 2,
+        "action": "Enter valid Password (trigger OTP field visibility)",
+        "expected_result": "Password field accepts input and OTP field appears"
+      },
+      {
+        "step_number": 3,
+        "action": "Leave OTP field empty",
+        "expected_result": "OTP field is empty"
+      },
+      {
+        "step_number": 4,
+        "action": "Click Login CTA button",
+        "expected_result": "'Field cannot be empty' error message is shown for empty fields, login is not processed"
+      },
+      {
+        "step_number": 5,
+        "action": "Repeat test leaving other fields empty individually",
+        "expected_result": "Appropriate error messages shown for each empty field"
+      }
+    ],
+    "expected_outcome": "Login is blocked with clear validation errors when any required field is empty",
+    "postconditions": [
+      "Login page remains with error messages displayed"
+    ],
+    "tags": [
+      "validation",
+      "error-handling",
+      "functional"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "All fields empty",
+      "Single field empty",
+      "Whitespace input treated as empty"
+    ],
+    "side_effects": []
+  },
+  {
+    "title": "Login attempt with invalid credentials shows generic error",
+    "description": "Verify that incorrect username, password, or OTP results in a generic 'Invalid credentials' error message without revealing which field is incorrect",
+    "business_rule": "System must prevent account harvesting by showing generic error on invalid login attempts",
+    "preconditions": [
+      "User is on login page with OTP field visible"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Enter invalid Username",
+        "expected_result": "Username field accepts input"
+      },
+      {
+        "step_number": 2,
+        "action": "Enter invalid Password",
+        "expected_result": "Password field accepts input"
+      },
+      {
+        "step_number": 3,
+        "action": "Enter invalid OTP",
+        "expected_result": "OTP field accepts input"
+      },
+      {
+        "step_number": 4,
+        "action": "Click Login CTA button",
+        "expected_result": "Generic 'Invalid credentials' error message is displayed"
+      },
+      {
+        "step_number": 5,
+        "action": "Repeat with valid username but invalid password or OTP",
+        "expected_result": "Same generic error message is shown"
+      }
+    ],
+    "expected_outcome": "User is not logged in and receives generic error message without details",
+    "postconditions": [
+      "Login page remains with error message displayed"
+    ],
+    "tags": [
+      "security",
+      "error-handling",
+      "authentication"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "Invalid username format",
+      "Incorrect password",
+      "Expired or incorrect OTP"
+    ],
+    "side_effects": []
+  },
+  {
+    "title": "Account lockout after 5 consecutive failed login attempts",
+    "description": "Verify that after 5 failed login attempts, the account is temporarily locked and user cannot attempt login until lockout period expires",
+    "business_rule": "To prevent brute force attacks, account locks after 5 failed attempts",
+    "preconditions": [
+      "User has a registered account",
+      "User is on login page"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Attempt login with valid username but invalid password and OTP",
+        "expected_result": "Login fails with generic error"
+      },
+      {
+        "step_number": 2,
+        "action": "Repeat step 1 four more times (total 5 failed attempts)",
+        "expected_result": "Each attempt fails with generic error"
+      },
+      {
+        "step_number": 3,
+        "action": "Attempt login again after 5th failure",
+        "expected_result": "Account is locked; login attempts are blocked with appropriate lockout message"
+      }
+    ],
+    "expected_outcome": "Account is locked after 5 failed attempts and user is notified",
+    "postconditions": [
+      "Account remains locked until lockout duration expires"
+    ],
+    "tags": [
+      "security",
+      "authentication",
+      "error-handling"
+    ],
+    "priority": "High",
+    "test_type": "Security",
+    "boundary_conditions": [
+      "Exactly 5 failed attempts triggers lockout",
+      "Attempt 4 failed attempts no lockout",
+      "Lockout duration expiry"
+    ],
+    "side_effects": [
+      "Account lockout state updated"
+    ]
+  },
+  {
+    "title": "OTP expiry enforcement during login",
+    "description": "Verify that the system rejects OTPs entered after their validity window (5-10 minutes) and prompts user accordingly",
+    "business_rule": "OTP must be validated within its expiry time to ensure security",
+    "preconditions": [
+      "User has valid username and password",
+      "OTP generated and expired (older than 10 minutes)"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Enter valid Username and Password",
+        "expected_result": "OTP field appears"
+      },
+      {
+        "step_number": 2,
+        "action": "Enter expired OTP value",
+        "expected_result": "OTP field accepts input"
+      },
+      {
+        "step_number": 3,
+        "action": "Click Login CTA button",
+        "expected_result": "Login fails with 'Invalid credentials' or OTP expiry message"
+      }
+    ],
+    "expected_outcome": "Login is denied if OTP is expired, user is notified appropriately",
+    "postconditions": [
+      "User remains on login page with error message"
+    ],
+    "tags": [
+      "security",
+      "otp",
+      "validation"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "OTP entered just before expiry",
+      "OTP entered just after expiry",
+      "OTP validity window (5-10 minutes)"
+    ],
+    "side_effects": []
+  },
+  {
+    "title": "Login CTA disabled until all fields are populated",
+    "description": "Verify that the Login button remains disabled or prompts validation until Username, Password, and OTP fields are all filled",
+    "business_rule": "Login action is only processed when all required fields have valid input",
+    "preconditions": [
+      "User is on login page"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Leave all fields empty",
+        "expected_result": "Login button is disabled or clicking shows validation"
+      },
+      {
+        "step_number": 2,
+        "action": "Enter Username only",
+        "expected_result": "Login button remains disabled or prompts validation"
+      },
+      {
+        "step_number": 3,
+        "action": "Enter Password only (OTP field appears)",
+        "expected_result": "Login button remains disabled or prompts validation"
+      },
+      {
+        "step_number": 4,
+        "action": "Enter OTP only",
+        "expected_result": "Login button remains disabled or prompts validation"
+      },
+      {
+        "step_number": 5,
+        "action": "Enter all three fields",
+        "expected_result": "Login button becomes enabled"
+      }
+    ],
+    "expected_outcome": "Login button only allows submission when all fields are populated",
+    "postconditions": [
+      "Login button state reflects input completeness"
+    ],
+    "tags": [
+      "validation",
+      "ui",
+      "functional"
+    ],
+    "priority": "High",
+    "test_type": "Functional",
+    "boundary_conditions": [
+      "Partial field completion",
+      "Whitespace input treated as empty",
+      "Rapid input changes"
+    ],
+    "side_effects": []
+  },
+  {
+    "title": "Session initiation and redirection upon successful login",
+    "description": "Verify that after successful login, user is redirected to personalized dashboard and secure session is established",
+    "business_rule": "Successful authentication must start a secure session and redirect user appropriately",
+    "preconditions": [
+      "User has valid credentials",
+      "User is on login page"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Enter valid Username, Password, and OTP",
+        "expected_result": "All fields accept input"
+      },
+      {
+        "step_number": 2,
+        "action": "Click Login CTA button",
+        "expected_result": "Login request is processed"
+      },
+      {
+        "step_number": 3,
+        "action": "Observe page redirection",
+        "expected_result": "User is redirected to personalized dashboard"
+      },
+      {
+        "step_number": 4,
+        "action": "Check session cookie or token",
+        "expected_result": "Secure session token is created and stored"
+      }
+    ],
+    "expected_outcome": "User is logged in with active session and redirected to dashboard",
+    "postconditions": [
+      "User session is active",
+      "Dashboard page is displayed"
+    ],
+    "tags": [
+      "functional",
+      "security",
+      "session-management"
+    ],
+    "priority": "High",
+    "test_type": "E2E",
+    "boundary_conditions": [
+      "Session timeout after inactivity",
+      "Session persistence across tabs",
+      "Session invalidation on logout"
+    ],
+    "side_effects": [
+      "Session token created",
+      "User redirected"
+    ]
+  },
+  {
+    "title": "Resend OTP button disables and enables correctly to prevent spamming",
+    "description": "Verify that Resend OTP button next to OTP field is disabled for 30-60 seconds after OTP field appears and enables afterward",
+    "business_rule": "Resend OTP must be throttled to prevent abuse",
+    "preconditions": [
+      "User is on login page",
+      "Password field has at least one character to trigger OTP field"
+    ],
+    "test_steps": [
+      {
+        "step_number": 1,
+        "action": "Trigger OTP field by entering password",
+        "expected_result": "OTP field appears with Resend OTP button disabled"
+      },
+      {
+        "step_number": 2,
+        "action": "Attempt to click Resend OTP button immediately",
+        "expected_result": "Button is disabled and no action occurs"
+      }
+]

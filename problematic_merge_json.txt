@@ -1,0 +1,57 @@
+{
+  "id": "merged-a9194ccefdfa-447e03c0a4a5",
+  "title": "Submit application without valid loan type - Negative",
+  "description": "Verify system prevents submission if loan type is not selected or missing in request payload",
+  "business_rule": "Loan type selection is mandatory before application submission",
+  "preconditions": [
+    "User is logged in",
+    "User is on Create Application page"
+  ],
+  "test_steps": [
+    {
+      "step_number": 1,
+      "action": "Open Create Application page",
+      "expected_result": "Page loads with loan type radio buttons visible"
+    },
+    {
+      "step_number": 2,
+      "action": "Execute test scenario based on parameter "loanTypeSelection":\n- If "none": Do not select any loan type\n- If "missingInPayload": Intercept submission request and remove loan type field from payload",
+      "expected_result": "Loan type is either not selected or missing from submission payload"
+    },
+    {
+      "step_number": 3,
+      "action": "Click 'Submit' button (or submit application)",
+      "expected_result": "Submission is blocked and validation error is displayed (frontend) or server rejects submission with validation error (backend)"
+    }
+  ],
+  "parameters": [
+    {
+      "name": "loanTypeSelection",
+      "description": "Defines the scenario for loan type input",
+      "values": [
+        "none",
+        "missingInPayload"
+      ]
+    }
+  ],
+  "expected_outcome": "User is prompted to select a loan type before submission or notified of missing loan type; application is not created",
+  "postconditions": [
+    "No application record is created"
+  ],
+  "tags": [
+    "loan-application",
+    "validation",
+    "negative",
+    "functional",
+    "api"
+  ],
+  "priority": "High",
+  "test_type": "Frontend/Backend",
+  "is_regression": true,
+  "boundary_conditions": [],
+  "side_effects": [],
+  "created_at": "2026-01-20T01:23:57.076136",
+  "updated_at": "2026-01-20T01:23:57.076508",
+  "version": 2,
+  "source_document": null
+}
